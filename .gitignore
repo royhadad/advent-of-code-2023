@@ -1,2 +1,3 @@
 node_modules
-./days/**/input.txt
+# ignore every file called input.txt in subdirectories
+**/input.txt
