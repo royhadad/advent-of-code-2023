@@ -1,75 +1,120 @@
 import fs from "fs";
 
-type GameAction = "ROCK" | "PAPER" | "SCISSORS";
-
-type Game = {
-  elf: GameAction;
-  human: GameAction;
-};
-
-type GameResult = "WIN" | "LOSE" | "DRAW";
-
-const gameActionCodeToGameAction = (code: string): GameAction => {
-  if (code === "A" || code === "X") {
-    return "ROCK";
-  } else if (code === "B" || code === "Y") {
-    return "PAPER";
-  } else if (code === "C" || code === "Z") {
-    return "SCISSORS";
-  } else {
-    throw new Error("Invalid Game action code");
-  }
-};
-
-function getGameResultForHuman(game: Game): GameResult {
-  if (game.human === "ROCK" && game.elf === "SCISSORS") {
-    return "WIN";
-  } else if (game.human === "PAPER" && game.elf === "ROCK") {
-    return "WIN";
-  } else if (game.human === "SCISSORS" && game.elf === "PAPER") {
-    return "WIN";
-  } else if (game.human === game.elf) {
-    return "DRAW";
-  } else {
-    return "LOSE";
-  }
-}
-
-const input = fs.readFileSync("./days/day2/input.txt", "utf-8").trim();
+const input = fs.readFileSync(__dirname + "/input.txt", "utf-8").trim();
 
 console.log("started");
 
-const games = input
-  .split("\n")
-  .map((s) => {
-    return s.split(" ");
-  })
-  .map<Game>(([elfCode, meCode]) => {
-    return {
-      elf: gameActionCodeToGameAction(elfCode),
-      human: gameActionCodeToGameAction(meCode),
-    };
-  });
+const lines: string[] = input.split("\n");
 
-let totalScore = 0;
-games.forEach((game) => {
-  if (game.human === "ROCK") {
-    totalScore += 1;
-  } else if (game.human === "PAPER") {
-    totalScore += 2;
-  } else if (game.human === "SCISSORS") {
-    totalScore += 3;
+const calibrationValues: number[] = lines.map((line) => {
+  const allNumbersInLine = getAllNumbersInLine(line);
+  if (allNumbersInLine.length < 1) {
+    throw new Error("no numbers found in line");
   }
-
-  if (getGameResultForHuman(game) === "WIN") {
-    totalScore += 6;
-  } else if (getGameResultForHuman(game) === "DRAW") {
-    totalScore += 3;
-  }
+  const firstNumber = allNumbersInLine[0];
+  const lastNumber = allNumbersInLine[allNumbersInLine.length - 1];
+  return parseInt(firstNumber.toString() + lastNumber.toString());
 });
 
-const res = totalScore;
+const sumOfCalibrationValues = calibrationValues.reduce((acc, curr) => acc + curr, 0);
 
-console.log(res);
+console.log(sumOfCalibrationValues);
 
 console.log("done");
+
+function getAllNumbersInLine(line: string): number[] {
+  const allNumbersAsWords: { asString: string; numericValue: number }[] = [
+    {
+      asString: "one",
+      numericValue: 1,
+    },
+    {
+      asString: "two",
+      numericValue: 2,
+    },
+    {
+      asString: "three",
+      numericValue: 3,
+    },
+    {
+      asString: "four",
+      numericValue: 4,
+    },
+    {
+      asString: "five",
+      numericValue: 5,
+    },
+    {
+      asString: "six",
+      numericValue: 6,
+    },
+    {
+      asString: "seven",
+      numericValue: 7,
+    },
+    {
+      asString: "eight",
+      numericValue: 8,
+    },
+    {
+      asString: "nine",
+      numericValue: 9,
+    },
+    {
+      asString: "0",
+      numericValue: 0,
+    },
+    {
+      asString: "1",
+      numericValue: 1,
+    },
+    {
+      asString: "2",
+      numericValue: 2,
+    },
+    {
+      asString: "3",
+      numericValue: 3,
+    },
+    {
+      asString: "4",
+      numericValue: 4,
+    },
+    {
+      asString: "5",
+      numericValue: 5,
+    },
+    {
+      asString: "6",
+      numericValue: 6,
+    },
+    {
+      asString: "7",
+      numericValue: 7,
+    },
+    {
+      asString: "8",
+      numericValue: 8,
+    },
+    {
+      asString: "9",
+      numericValue: 9,
+    },
+  ];
+
+  const allNumbers: number[] = [];
+
+  for (let i = 0; i < line.length; i++) {
+    const numberFoundAtCurrentIndex = allNumbersAsWords.find(({ asString }) => {
+      if (asString === line.substring(i, asString.length + i)) {
+        return true;
+      }
+    });
+
+    if (numberFoundAtCurrentIndex !== undefined) {
+      allNumbers.push(numberFoundAtCurrentIndex.numericValue);
+    }
+  }
+
+  return allNumbers;
+}
