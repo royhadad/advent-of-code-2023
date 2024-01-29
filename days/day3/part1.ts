@@ -21,7 +21,7 @@ for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
   }
 }
 
-const sumOfPartNumbers = partNumbers.reduce((acc, current) => (acc += current), 0);
+const sumOfPartNumbers = partNumbers.reduce((acc, current) => acc + current, 0);
 
 console.log(sumOfPartNumbers);
 
