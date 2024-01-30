@@ -9,6 +9,8 @@ interface Solution {
   unknowns: number[]; // The solution for the unknowns
 }
 
+// TODO fix this
+// Error solving system of equations: RangeError: Matrix must be square (size: [300, 33])
 export function solveSystemOfEquations(equations: LinearEquation[]): Solution | null {
   try {
     const coefficientsMatrix = equations.map((eq) => eq.coefficients);

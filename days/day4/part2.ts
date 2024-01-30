@@ -22,7 +22,7 @@ if (solution !== null) {
 
 console.log("done");
 
-
+// TODO fix this
 // dubious, created by chatGPT3.5
 // Convert Hailstone to LinearEquation
 function hailstoneToEquation(hailstone: Hailstone): LinearEquation {
@@ -41,29 +41,9 @@ function hailstoneToEquation(hailstone: Hailstone): LinearEquation {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//------------------------------------------------
+// some explanations:
+//
 // the hailstones
 // x1=px1+t1*vx1
 // y1=py1+t1*vy1
