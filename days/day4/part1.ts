@@ -102,6 +102,7 @@ function findIntersectionPoint(positionsAndVelocities: {
   const { px1, py1, vx1, vy1, px2, py2, vx2, vy2 } = positionsAndVelocities;
 
   if (vx1 === 0 || vx2 === 0) {
+    // we solved the problem without handling this case, so that's good enough
     throw new Error("unexpected vx1 or vx2 are equal to zero, case not implemented");
   }
 
