@@ -1,4 +1,5 @@
 import fs from "fs";
+import { parseInput, Hailstone } from "./parser";
 
 const input = fs.readFileSync(__dirname + "/input.txt", "utf-8").trim();
 
@@ -42,34 +43,6 @@ const validIntersectionPoints = intersectionPoints.filter(
 console.log("total number of valid intersection points:", validIntersectionPoints.length);
 
 console.log("done");
-
-type Hailstone = {
-  position: {
-    x: number;
-    y: number;
-    z: number;
-  };
-  velocity: {
-    x: number;
-    y: number;
-    z: number;
-  };
-};
-
-function parseInput(input: string): Hailstone[] {
-  const hailstones: Hailstone[] = input.split("\n").map((line) => {
-    const [positionString, velocityString] = line.split("@");
-    const [px, py, pz] = positionString.trim().split(", ");
-    const [vx, vy, vz] = velocityString.trim().split(", ");
-
-    return {
-      position: { x: parseInt(px), y: parseInt(py), z: parseInt(pz) },
-      velocity: { x: parseInt(vx), y: parseInt(vy), z: parseInt(vz) },
-    };
-  });
-
-  return hailstones;
-}
 
 function forEachPairOfHailstones(hailstones: Hailstone[], func: (hs1: Hailstone, hs2: Hailstone) => void): void {
   for (let i = 0; i < hailstones.length; i++) {
