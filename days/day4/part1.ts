@@ -8,30 +8,24 @@ const hailstones = parseInput(input);
 
 const intersectionPoints: IntersectionPoint[] = [];
 
-for (let i = 0; i < hailstones.length; i++) {
-  for (let j = i + 1; j < hailstones.length; j++) {
-    const hs1 = hailstones[i];
-    const hs2 = hailstones[j];
-    const intersectionPoint = findIntersectionPoint2({
-      px1: hs1.position.x,
-      py1: hs1.position.y,
-      vx1: hs1.velocity.x,
-      vy1: hs1.velocity.y,
-      px2: hs2.position.x,
-      py2: hs2.position.y,
-      vx2: hs2.velocity.x,
-      vy2: hs2.velocity.y,
-    });
+forEachPairOfHailstones(hailstones, (hs1, hs2) => {
+  const intersectionPoint = findIntersectionPoint({
+    px1: hs1.position.x,
+    py1: hs1.position.y,
+    vx1: hs1.velocity.x,
+    vy1: hs1.velocity.y,
+    px2: hs2.position.x,
+    py2: hs2.position.y,
+    vx2: hs2.velocity.x,
+    vy2: hs2.velocity.y,
+  });
 
-    intersectionPoints.push(intersectionPoint);
-  }
-}
+  intersectionPoints.push(intersectionPoint);
+});
 
 const TEST_AREA = {
-  // MIN: 7,
   MIN: 200000000000000,
   MAX: 400000000000000,
-  // MAX: 27,
 };
 
 const validIntersectionPoints = intersectionPoints.filter(
@@ -39,13 +33,11 @@ const validIntersectionPoints = intersectionPoints.filter(
     intersectionPoint !== null && // it exists (not parallel lines)
     !intersectionPoint.isInThePastLine1 && // it's not in the past
     !intersectionPoint.isInThePastLine2 &&
-    intersectionPoint.x >= TEST_AREA.MIN && // it's inside of the test area
+    intersectionPoint.x >= TEST_AREA.MIN && // it's inside the test area
     intersectionPoint.x <= TEST_AREA.MAX &&
     intersectionPoint.y >= TEST_AREA.MIN &&
     intersectionPoint.y <= TEST_AREA.MAX
 );
-
-console.log(validIntersectionPoints);
 
 console.log("total number of valid intersection points:", validIntersectionPoints.length);
 
@@ -79,6 +71,16 @@ function parseInput(input: string): Hailstone[] {
   return hailstones;
 }
 
+function forEachPairOfHailstones(hailstones: Hailstone[], func: (hs1: Hailstone, hs2: Hailstone) => void): void {
+  for (let i = 0; i < hailstones.length; i++) {
+    for (let j = i + 1; j < hailstones.length; j++) {
+      const hs1 = hailstones[i];
+      const hs2 = hailstones[j];
+      func(hs1, hs2);
+    }
+  }
+}
+
 // find intersections between hailstones' paths (no collision needed)
 // test area 200000000000000 to 400000000000000 (x & y axis)
 // 2 hailstones can only collide once (because they move in a straight line)
@@ -99,79 +101,13 @@ function findIntersectionPoint(positionsAndVelocities: {
 }): IntersectionPoint {
   const { px1, py1, vx1, vy1, px2, py2, vx2, vy2 } = positionsAndVelocities;
 
-  // the functions
-  // const line1X = (t: number) => px1 + t * vx1;
-  // const line1Y = (t: number) => py1 + t * vy1;
-
-  // const line2X = (f: number) => px2 + f * vx2;
-  // const line2Y = (f: number) => py2 + f * vy2;
-
-  // the equations to solve, we need to find the intersection point
-  // px1 + t * vx1 = px2 + f * vx2
-  // py1 + t * vy1 = py2 + f * vy2
-
-  // extract t from first equation
-  // px1 + t * vx1 = px2 + f * vx2
-  // t = (px2 + f * vx2 - px1)/(vx1)
-
-  // substitute t in 2nd equation
-  // py1 + t * vy1 = py2 + f * vy2
-  // py1 + ((px2 + f * vx2 - px1)/(vx1)) * vy1 = py2 + f * vy2
-
-  // solve for f
-  // py1 + ((px2 + f * vx2 - px1)/(vx1)) * vy1 = py2 + f * vy2
-  // f = (vx1 * (py2 - py1) - px2 + px1) / (vx2 - vx1 * vy2)
-
-  // solve for t
-  // t = (px2 + f * vx2 - px1)/(vx1)
-
-  // find x and y
-  // const line1XAtIntersection = line1X(t)
-  // const line1YAtIntersection = line1Y(t)
-
-  const slope1 = { numerator: vy1, denominator: vx1 };
-  const slope2 = { numerator: vy2, denominator: vx2 };
-
-  // Check if slopes are equal
-  // to avoid floating point precision problems, we don't divide, but rather keep the numerator and denominator
-  const areParallel = slope1.numerator * slope2.denominator === slope2.numerator * slope1.denominator;
-
-  if (areParallel) {
-    return null;
+  if (vx1 === 0 || vx2 === 0) {
+    throw new Error("unexpected vx1 or vx2 are equal to zero, case not implemented");
   }
 
-  const f = (vx1 * (py2 - py1) - px2 + px1) / (vx2 - vx1 * vy2);
-  const t = (px2 + f * vx2 - px1) / vx1;
-
-  const line1XAtIntersection = px1 + t * vx1;
-  const line1YAtIntersection = py1 + t * vy1;
-
-  return {
-    x: line1XAtIntersection,
-    y: line1YAtIntersection,
-    isInThePastLine1: t < 0,
-    isInThePastLine2: f < 0,
-    // @ts-ignore
-    positionsAndVelocities: positionsAndVelocities,
-    t: t,
-    f: f,
-  };
-}
-
-function findIntersectionPoint2(positionsAndVelocities: {
-  px1: number;
-  py1: number;
-  vx1: number;
-  vy1: number;
-  px2: number;
-  py2: number;
-  vx2: number;
-  vy2: number;
-}): IntersectionPoint {
-  const { px1, py1, vx1, vy1, px2, py2, vx2, vy2 } = positionsAndVelocities;
-
+  // the slopes are vy1/vx1 and vy2/vx2, so to check if they are equal (without getting floating point inaccuracy issues) we do this:
   if (vy1 * vx2 === vy2 * vx1) {
-    return null; // slopes are equal
+    return null; // slopes are equal, no intersection point
   }
 
   // equations of the form y=mx+b
@@ -180,24 +116,22 @@ function findIntersectionPoint2(positionsAndVelocities: {
 
   // set y to be the same and find x of intersection point
   // (vy1/vx1)*(x-px1)+py1 = (vy2/vx2)*(x-px2)+py2
-  // after some dubious help from gpt3.5 to simplify
+  // solve for x
   const x = (vy1 * vx2 * px1 - vx1 * vx2 * py1 - vy2 * vx1 * px2 + vx1 * vx2 * py2) / (vy1 * vx2 - vy2 * vx1);
   // insert x back to the first equation to find y of intersection point
   const y = (vy1 / vx1) * (x - px1) + py1;
 
-  // now to check the time of intersection
+  // now to check the time of intersection, using those equations to describe x in relation to time (t)
+  // const line1X = px1 + t1 * vx1;
+  // const line2X = px2 + t2 * vx2;
 
-  // const line1X = (t: number) => px1 + t * vx1;
-  // const line1Y = (t: number) => py1 + t * vy1;
+  // solving the first equation for t1
+  // x = px1 + t1 * vx1
+  // t1 = (x - px1)/vx1
 
-  // const line2X = (f: number) => px2 + f * vx2;
-  // const line2Y = (f: number) => py2 + f * vy2;
-
-  // x = px1 + t * vx1
-  // t= (x - px1)/vx1
-
-  // x = px2 + f * vx2
-  // f = (x-px2)/vx2
+  // solving the second equation for t2
+  // x = px2 + t2 * vx2
+  // t2 = (x-px2)/vx2
 
   const line1Time = (x - px1) / vx1;
   const line2Time = (x - px2) / vx2;
@@ -207,7 +141,5 @@ function findIntersectionPoint2(positionsAndVelocities: {
     y,
     isInThePastLine1: line1Time < 0,
     isInThePastLine2: line2Time < 0,
-    // @ts-ignore
-    positionsAndVelocities: positionsAndVelocities,
   };
 }
