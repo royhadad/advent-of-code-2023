@@ -1,5 +1,5 @@
 import fs from "fs";
-import { min, last } from "lodash";
+import { last } from "lodash";
 
 const input = fs.readFileSync(__dirname + "/input.txt", "utf-8").trim();
 
