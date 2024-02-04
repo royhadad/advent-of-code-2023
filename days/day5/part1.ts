@@ -34,7 +34,7 @@ function getDestinationOfSource(agriMap: AgriMap, source: number): number {
       return map.destinationRangeStart + source - map.sourceRangeStart;
     }
   }
-  // if no value mapped for this key, the value is equal to the key itself
+  // if no destination found for this source, the destination is equal to the source itself
   return source;
 }
 
