@@ -12,18 +12,13 @@ for (let i = 0; i < cardPiles.length; i++) {
   const points = getCardPoints(currentCardPile.card);
 
   for (let j = 0; j < points; j++) {
-    try {
-      // cardPiles[i + 1 + j].quantity += currentCardPile.quantity;
-      cardPiles[i + 1 + j].quantity += currentCardPile.quantity;
-    } catch (e) {
-      console.log("hi!");
-    }
+    cardPiles[i + 1 + j].quantity += currentCardPile.quantity;
   }
 }
 
-const totalCardsNumberOfCards = cardPiles.reduce((acc, curr) => acc + curr.quantity, 0);
+const totalNumberOfCards = cardPiles.reduce((acc, curr) => acc + curr.quantity, 0);
 
-console.log(totalCardsNumberOfCards);
+console.log(totalNumberOfCards);
 
 console.log("done");
 
@@ -34,12 +29,10 @@ type CardPile = {
 
 function getCardPoints(card: Card): number {
   let points = 0;
-
   card.numbers.forEach((number) => {
     if (card.winningNumbers.includes(number)) {
       points++;
     }
   });
-
   return points;
 }
