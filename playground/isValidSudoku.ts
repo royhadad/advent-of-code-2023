@@ -9,9 +9,11 @@ const board = [
   [".", ".", ".", "4", "1", "9", ".", ".", "5"],
   [".", ".", ".", ".", "8", ".", ".", "7", "9"],
 ];
-console.log(isValidSudoku(board));
+// console.log(isValidSudoku(board));
 
-function isValidSudoku(board: string[][]): boolean {
+export function isValidSudoku(
+  board: string[][]
+): { isValid: false; groupOfPositionsWithViolation: Position[] } | { isValid: true } {
   const allPositionArraysToCheck: Position[][] = [];
 
   // check rows
@@ -37,13 +39,13 @@ function isValidSudoku(board: string[][]): boolean {
 
   for (const positionsArrayToCheck of allPositionArraysToCheck) {
     if (doNumbersRepeat(board, positionsArrayToCheck)) {
-      return false;
+      return { isValid: false, groupOfPositionsWithViolation: positionsArrayToCheck };
     }
   }
-  return true;
+  return { isValid: true };
 }
 
-function createPositionsOfAllCombinations(rows: number[], columns: number[]): Position[] {
+export function createPositionsOfAllCombinations(rows: number[], columns: number[]): Position[] {
   const combinationPositions: Position[] = [];
   rows.forEach((row) => {
     columns.forEach((column) => {
@@ -56,7 +58,7 @@ function createPositionsOfAllCombinations(rows: number[], columns: number[]): Po
   return combinationPositions;
 }
 
-type Position = { row: number; column: number };
+export type Position = { row: number; column: number };
 function doNumbersRepeat(board: string[][], positions: Position[]): boolean {
   const usedNumbers = new Set<number>(); // 1-9
 
