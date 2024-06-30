@@ -1,6 +1,6 @@
 import fs from "fs";
 
-(() => {
+const main = () => {
   const input = fs.readFileSync(__dirname + "/input.txt", "utf-8").trim();
 
   console.log("started");
@@ -12,17 +12,19 @@ import fs from "fs";
   console.log("sumOfHashOfSteps:", sumOfHashOfSteps);
 
   console.log("done");
+};
 
-  function hashFunction(str: string): number {
-    let currentValue = 0;
+// main();
 
-    for (let i = 0; i < str.length; i++) {
-      const currentCharASCIIValue = str.charCodeAt(i);
-      currentValue += currentCharASCIIValue;
-      currentValue *= 17;
-      currentValue %= 256;
-    }
+export function hashFunction(str: string): number {
+  let currentValue = 0;
 
-    return currentValue;
+  for (let i = 0; i < str.length; i++) {
+    const currentCharASCIIValue = str.charCodeAt(i);
+    currentValue += currentCharASCIIValue;
+    currentValue *= 17;
+    currentValue %= 256;
   }
-})();
+
+  return currentValue;
+}
